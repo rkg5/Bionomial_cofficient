@@ -1,0 +1,64 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long int
+const int mod = 1e9 + 7;
+const int N = 100005;
+int coff[N];
+*********************************************************************************************************************************************************************************************************************
+code to calculate bionomial cofficient
+lets i have q queries and in each query, i got to calculate C(n,k) 
+mathematically it can be written as (n!)%mod/((n-k)!%mod*(k)!%mod)
+using modulo multiplicative inverse it can be written as 
+ fact[n] * pow(fact[n-k], mod-2)* pow(fact[k], mod-2)
+using it and dust it
+**********************************************************************************************************************************************************************************************************************
+void pre_compute(int n) {
+    coff[0] = coff[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        coff[i] = coff[i - 1] * i;
+        coff[i] %= mod;
+    }
+}
+
+int power(int p, int q, int mod) {
+    int ans = 1;
+    while (q) {
+        if (q % 2) {
+            ans *= p;
+            ans %= mod;
+            q--;
+        } else {
+            p *= p;
+            p %= mod;
+            q /= 2;
+        }
+    }
+    return ans;
+}
+
+int binomial_coff(int n, int k, int mod) {
+    if (k > n) return 0;
+    int ans = coff[n];
+    ans *= power(coff[n - k], mod - 2, mod) % mod;
+    ans %= mod;
+    ans *= power(coff[k], mod - 2, mod) % mod;
+    ans %= mod;
+    return ans;
+}
+
+void solve() {
+    int tc;
+    cin >> tc;
+    while (tc--) {
+        int n, k;
+        cin >> n >> k;
+        pre_compute(n + 1);
+        int ans = binomial_coff(n, k, mod);
+        cout << ans << endl;
+    }
+}
+
+signed main() {
+    solve();
+    return 0;
+}
